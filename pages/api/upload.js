@@ -26,7 +26,7 @@ export default async function handle(req,res) {
             resolve({fields,files})   
        })
    })
-    const link = files.file.filepath
+    const link = files.file.newFilename
     console.log(files.file)
 
    return res.status(200).json({link})
