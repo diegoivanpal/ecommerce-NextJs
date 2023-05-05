@@ -1,7 +1,7 @@
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import {  useState } from "react";
+import {  useEffect, useState } from "react";
 import Spinner from "./Spinner";
 import {ReactSortable} from "react-sortablejs"
 
@@ -10,20 +10,28 @@ export default function ProductForm({
     title: existingTitle,
     description: existingDescription,
     price: existingPrice,
-    images :existingImages
+    images :existingImages,
+    category: assignCategory
 
 }) {
     const [title, setTitle] = useState (existingTitle || '');
     const [description, setdescription] = useState (existingDescription ||'');
+    const [category,setCategory] = useState(assignCategory || '')
     const [price, setPrice] = useState (existingPrice || '');
     const [goToProducts, setGoToProducts] = useState(false)
     const [images, setImages] = useState(existingImages || [])
     const[isUploadins, setIsUploading] = useState(false)
+    const[categories,setCategories] = useState([])
     const router = useRouter()
+
+    useEffect(()=>{
+        axios.get('/categories').then(result =>{
+            setCategories(result.data)})
+    },[])
 
     async function saveProduct(ev) {
         ev.preventDefault();
-        const data = {title,description,price,images}
+        const data = {title,description,price,images,category}
         if (_id) {            
             await axios.put('/api/products',{...data, _id})
             
@@ -74,6 +82,15 @@ export default function ProductForm({
                     placeholder="product name" 
                     value={title} 
                     onChange={ev => setTitle(ev.target.value)}/>
+                    <label>Category</label>
+                    <select value={category}
+                    onChange={ev => setCategory(ev.target.value)}>
+                        <option value="">Uncategorized</option>
+                        {categories.length > 0 && categories.map(c=> (
+                            <options key={c_id} value={c._id} >{c.name}</options>
+                        ))}
+
+                    </select>
                     <label>
                         Photos 
                     </label>
