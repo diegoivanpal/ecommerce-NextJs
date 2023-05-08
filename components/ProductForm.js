@@ -26,10 +26,16 @@ export default function ProductForm({
     const[categories,setCategories] = useState([])
     const router = useRouter()
 
-    useEffect(()=>{
-        axios.get('/categories').then(result =>{
-            setCategories(result.data)})
+    useEffect(() => {
+        fetchCategories()
     },[])
+
+    function fetchCategories() {
+        axios.get('/api/categories').then(result => {
+            setCategories(result.data)
+        })
+
+    }
 
     async function saveProduct(ev) {
         ev.preventDefault();
@@ -78,11 +84,11 @@ export default function ProductForm({
 
     const propertiesToFill = []
     if (categories.length > 0 && category){
-        let catInfo = categories.find(({_id}) =>   _iid=== category)
+        let catInfo = categories.find(({_id}) => _id === category)
         propertiesToFill.push(...catInfo.properties)
         while(catInfo?.parent?._id){
             const parentCat = categories.find(({_id}) => _id === catInfo?.parent?._id)
-            propertiesToFill.push(parentCat.properties)
+            propertiesToFill.push(...parentCat.properties)
             catInfo = parentCat
         } 
     }
@@ -94,6 +100,8 @@ export default function ProductForm({
             return newProductProps
         })
     }
+
+    console.log(propertiesToFill)
 
     return(        
             <form onSubmit={saveProduct}>
@@ -108,7 +116,7 @@ export default function ProductForm({
                     onChange={ev => setCategory(ev.target.value)}>
                         <option value="">Uncategorized</option>
                         {categories.length > 0 && categories.map(c => (
-                            <options key={c._id} value={c._id} >{c.name}</options>
+                            <option key={c._id} value={c._id} >{c.name}</option>
                         ))}
 
                     </select>
@@ -116,7 +124,7 @@ export default function ProductForm({
                         <div key={p} className="flex gap-1" >
                             <div>{p.name}</div>
                             <select value= {productProperties[p.name]}
-                                    onChange={(ev) => setProductProp(p.name,ev.target.value)}> 
+                                    onChange={ev => setProductProp(p.name,ev.target.value)}> 
                                 {p.values.map(v => (
                                     <option key= {v} value={v}>
                                         {v}

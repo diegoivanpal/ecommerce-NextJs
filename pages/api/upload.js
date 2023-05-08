@@ -1,9 +1,14 @@
 import formidable from 'formidable'
 import path from 'path'
 import fs from 'fs/promises'
+import { mongooseConnect } from '@/lib/mongoose'
+import { isAdminRequest } from './auth/[...nextauth]'
 
 
 export default async function handle(req,res) {
+    await mongooseConnect()
+    await isAdminRequest(req, res)
+
     try {
        // console.log("Read Directory")
         await fs.readdir(path.join(process.cwd() +"/public","/images"))
