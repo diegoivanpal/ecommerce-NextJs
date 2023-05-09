@@ -136,7 +136,7 @@ function removeProperty(indexToRemove) {
                                    value={property.values}
                                    onChange={ev => handlePropertyValuesChange(index, properties, ev.target.value)}
                                    placeholder="values coma separated"/>
-                            <button className="btn-default" type="button" onClick={() => removeProperty(index)}>
+                            <button className="btn-red" type="button" onClick={() => removeProperty(index)}>
                                 Remove
                             </button>
                         </div>
@@ -185,11 +185,11 @@ function removeProperty(indexToRemove) {
                                             <td>
                                                 <button 
                                                 onClick={() => editCategory(category)} 
-                                                className="btn-primary mr-1"
+                                                className="btn-default"
                                                 >Edit</button>                                
                                                 <button 
                                                 onClick={()=>deleteCategory(category)}
-                                                className="btn-primary"
+                                                className="btn-red"
                                                 >Delete</button>
                                             </td>                                
                                         </tr>
